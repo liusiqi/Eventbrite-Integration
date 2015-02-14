@@ -17,7 +17,6 @@ namespace Eventbrite_2
             string test = Request.QueryString["code"];
 
             Response.Write(test);
-
         }
     }
 }
