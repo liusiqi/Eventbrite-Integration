@@ -1,0 +1,5 @@
+C:\Users\bigrp17\Documents\Visual Studio 2013\Projects\EventBrite0\EventBrite0\bin\EventBrite0.dll.config
+C:\Users\bigrp17\Documents\Visual Studio 2013\Projects\EventBrite0\EventBrite0\bin\EventBrite0.dll
+C:\Users\bigrp17\Documents\Visual Studio 2013\Projects\EventBrite0\EventBrite0\bin\EventBrite0.pdb
+C:\Users\bigrp17\Documents\Visual Studio 2013\Projects\EventBrite0\EventBrite0\obj\Debug\EventBrite0.dll
+C:\Users\bigrp17\Documents\Visual Studio 2013\Projects\EventBrite0\EventBrite0\obj\Debug\EventBrite0.pdb
