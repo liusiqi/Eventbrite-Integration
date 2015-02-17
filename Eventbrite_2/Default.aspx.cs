@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 
 using System.Net;
 using System.IO;
+using System.Text;
 
 namespace Eventbrite_2
 {
@@ -14,9 +15,13 @@ namespace Eventbrite_2
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            string first_url = "https://www.eventbrite.com/oauth/authorize?response_type=code&client_id=YHASIDSTEN277KD7LK";
+            string BaseURL = "https://www.eventbrite.com";
+            string Resource = "/oauth/authorize";
+            string QueryString = "?response_type=code&client_id=YHASIDSTEN277KD7LK";
+            StringBuilder builder = new StringBuilder();
+            builder.Append(BaseURL).Append(Resource).Append(QueryString);
             Server.ClearError();
-            Response.Redirect(first_url,false);
+            Response.Redirect(builder.ToString(),false);
             Context.ApplicationInstance.CompleteRequest();
         }
     }
