@@ -14,6 +14,7 @@ namespace EventBrite0
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            API_Methods Eventbrite_Object = null;
             //code=THE_USERS_AUTH_CODE&client_secret=YOUR_CLIENT_SECRET&client_id=YOUR_API_KEY&grant_type=authorization_code
             string THE_USERS_AUTH_CODE = Request.QueryString["code"];
             const string YOUR_CLIENT_SECRET = "Y3YA5HJD3EM6UX364MKPRQUCH7NDL2RSBIHG3PS3UCM3MYCB6M";
@@ -29,22 +30,15 @@ namespace EventBrite0
                 The subsequent “POST“ will contain the user’s access_token.
              */
             const string AccessTokenRequest = "https://www.eventbrite.com/oauth/token";
-            HttpWebRequest request = null;
-            HttpWebResponse response = null;
+            //HttpWebRequest request = null; //put inside try catch
+            //HttpWebResponse response = null; // put inside try catch
 
             try
             {
-                request = (HttpWebRequest)WebRequest.Create(AccessTokenRequest);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(AccessTokenRequest);
                 request.Method = "POST";
                 request.ContentType = "application/x-www-form-urlencoded";
-
-                string UrlEncodedData = "";
-
-                UrlEncodedData = "code=" + HttpUtility.UrlEncode(THE_USERS_AUTH_CODE) + "&";
-                UrlEncodedData += "client_secret=" + HttpUtility.UrlEncode(YOUR_CLIENT_SECRET) + "&";
-                UrlEncodedData += "client_id=" + HttpUtility.UrlEncode(YOUR_API_KEY) + "&";
-                UrlEncodedData += "grant_type=" + HttpUtility.UrlEncode("authorization_code");
-
+                string UrlEncodedData  = "code=" + HttpUtility.UrlEncode(THE_USERS_AUTH_CODE) + "&" + "client_secret=" + HttpUtility.UrlEncode(YOUR_CLIENT_SECRET) + "&" + "client_id=" + HttpUtility.UrlEncode(YOUR_API_KEY) + "&" + "grant_type=" + HttpUtility.UrlEncode("authorization_code");
                 request.ContentLength = UrlEncodedData.Length;
 
                 using (StreamWriter RequestStream = new StreamWriter(request.GetRequestStream()))
@@ -53,8 +47,7 @@ namespace EventBrite0
                     RequestStream.Close();
                 }
 
-                response = (HttpWebResponse)request.GetResponse();
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 string PostResponse = "";
                 using (StreamReader responseStream = new StreamReader(response.GetResponseStream()))
                 {
@@ -63,13 +56,18 @@ namespace EventBrite0
                 }
                 response.Close();
                 //Response.Write(PostResponse);
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
                 dynamic json = serializer.DeserializeObject(PostResponse);
                 string AccessToken = json["access_token"];
-                Response.Write(AccessToken);
+                //Response.Write(AccessToken);
+
+                Eventbrite_Object = new API_Methods(AccessToken);
+                string Eventbrite_Event_Search = Eventbrite_Object.event_search();
+                Response.Write(Eventbrite_Event_Search);
             }
-            catch
+            catch(WebException me)
             {
-                string ErrorMessage = "Error : retrieving long term access token failed. ";
+                string ErrorMessage = "Error : retrieving long term access token failed. " + me;
                 Response.Write(ErrorMessage);
             }
         }
