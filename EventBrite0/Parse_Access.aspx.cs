@@ -59,11 +59,13 @@ namespace EventBrite0
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 dynamic json = serializer.DeserializeObject(PostResponse);
                 string AccessToken = json["access_token"];
-                //Response.Write(AccessToken);
+                //Response.Write(AccessToken + "\n");
 
                 Eventbrite_Object = new API_Methods(AccessToken);
-                string Eventbrite_Event_Search = Eventbrite_Object.event_search();
-                Response.Write(Eventbrite_Event_Search);
+                //string userID= Eventbrite_Object.User_ID();
+                int eventCount = Eventbrite_Object.User_Event_Count("110515278343");
+                //Response.Write(userID + "\n\n");
+                Response.Write(eventCount);
             }
             catch(WebException me)
             {

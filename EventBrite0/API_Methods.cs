@@ -18,35 +18,73 @@ namespace EventBrite0
             AccessToken = accesstoken;
         }
 
-        public string event_search()
+        public string User_ID()
         {
-            string retVal = "";
-            string url = "https://www.eventbriteapi.com//v3/users/110515278343/owned_events/";
+            string userID = "";
+            string url = "https://www.eventbriteapi.com/v3/users/me/";
             try
             {       
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "GET";
                 //request.Timeout = 200000;
                 request.ContentType = "application/json; charset=UTF-8";
-                //request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
                 request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
                 Stream streamResponse = response.GetResponseStream();
 
+                //Read Body of Response
                 StreamReader sReader = new StreamReader(streamResponse);
-                retVal = sReader.ReadToEnd();
+                string userInfo = sReader.ReadToEnd();
 
                 sReader.Close();
                 response.Close();
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                dynamic json = serializer.DeserializeObject(userInfo);
+                userID = json["id"];
             }
             catch(WebException e)
             {
-                string ErrorMessage = "Error : retrieving event search failed. " + e;
+                string ErrorMessage = "Error : retrieving user ID failed. " + e;
                 return ErrorMessage;
             }
-            return retVal ;
+            return userID ;
+        }
+
+        public int User_Event_Count(string userID)
+        {
+            string url = "https://www.eventbriteapi.com/v3/users/110515278343/owned_events/";// +userID + "/owned_events/";
+            int eventCount = 0;
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "GET";
+                request.ContentType = "application/json; charset=UTF-8";
+                request.Headers.Add("Authorization", "Bearer " + AccessToken);
+
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                Stream streamResponse = response.GetResponseStream();
+
+                //Read Body of Response
+                StreamReader sReader = new StreamReader(streamResponse);
+                string userInfo = sReader.ReadToEnd();
+
+                sReader.Close();
+                response.Close();
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                dynamic json = serializer.DeserializeObject(userInfo);
+                eventCount = json["pagination"]["page_size"];
+                return eventCount;
+            }
+            catch(WebException e)
+            {
+                string ErrorMessage = "Error : retrieving Event Count failed. " + e;
+                return 0;
+            }
         }
     }
 }

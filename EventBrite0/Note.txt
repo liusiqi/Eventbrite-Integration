@@ -5,6 +5,10 @@
 	4. This is the best explanation so far: http://www.google.com/url?q=http%3A%2F%2Fwww.adrianworlddesign.com%2FKnowledge-Base%2FWeb-Standards%2FThings-about-Hypertext%2FHow-does-a-redirect-work&sa=D&sntz=1&usg=AFQjCNFqybcKk1Pl705Z46oFb8WGOK0Bvg
 	5. another good link: http://www.google.com/url?q=http%3A%2F%2Fclassicasp.aspfaq.com%2Fgeneral%2Fwhat-do-i-need-to-know-about-response-redirect.html&sa=D&sntz=1&usg=AFQjCNHO8FcJNRKmRp9AhZM_DlhqgE0-vw
 
+Access Token: 5Z5FE6HF3BJ763FOJFOQ 
+
+Pagination : http://developer.eventbrite.com/docs/pagination/
+
 Eventbrite API Methods:
 	1. Request Parameters General: http://developer.eventbrite.com/docs/
 	2 User Details: http://developer.eventbrite.com/docs/user-details/
