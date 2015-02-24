@@ -56,7 +56,7 @@ namespace EventBrite0
         public string User_Events(string userID)
         {
             string url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/";
-            string eventCount = "";
+            string Pagination_Events = "";
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -74,13 +74,41 @@ namespace EventBrite0
                 sReader.Close();
                 response.Close();
 
-                eventCount = userInfo;
-                return eventCount;
+                Pagination_Events = userInfo;
+                return Pagination_Events;
             }
             catch(WebException e)
             {
                 string ErrorMessage = "Error : retrieving Pagination and Events failed. " + e;
                 return ErrorMessage;
+            }
+        }
+
+        public void Create_Dictionaries(string Json_pagination_events, Dictionary<string, string> Name_Link, Dictionary<string, string> Name_Draft, Dictionary<string, string> Name_Ignore)
+        {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            dynamic pagination_events = serializer.DeserializeObject(Json_pagination_events);
+            int event_count = pagination_events["pagination"]["object_count"];
+            int page_count = pagination_events["pagination"]["page_count"];
+            if (event_count == 0)
+            {
+                Name_Link.Add("None", "");
+                Name_Draft.Add("None", "");
+                Name_Ignore.Add("None", "");
+            }
+            else
+            {
+                if (page_count == 1)
+                {
+                    for (int i = 0; i < event_count; i++)
+                    {
+                        string event_date = pagination_events["events"][i]["end"]["utc"];
+                        string event_ymd = event_date.Substring(0, 9);
+                        DateTime saveUtcNow = DateTime.UtcNow;
+                        string today_date = saveUtcNow.ToString(@"yyyy-mm-dd");
+                        // if old, store in ignore, else -> name_link
+                    }
+                }
             }
         }
     }
