@@ -55,7 +55,7 @@ namespace EventBrite0
 
         public string User_Events(string userID)
         {
-            string url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/" + "?status=ended";
+            string url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/";
             string eventCount = "";
             try
             {
@@ -68,21 +68,18 @@ namespace EventBrite0
 
                 Stream streamResponse = response.GetResponseStream();
 
-                //Read Body of Response
                 StreamReader sReader = new StreamReader(streamResponse);
                 string userInfo = sReader.ReadToEnd();
 
                 sReader.Close();
                 response.Close();
 
-                //JavaScriptSerializer serializer = new JavaScriptSerializer();
-                //dynamic json = serializer.DeserializeObject(userInfo);  do this later when more detail needed.
                 eventCount = userInfo;
                 return eventCount;
             }
             catch(WebException e)
             {
-                string ErrorMessage = "Error : retrieving Event Count failed. " + e;
+                string ErrorMessage = "Error : retrieving Pagination and Events failed. " + e;
                 return ErrorMessage;
             }
         }
