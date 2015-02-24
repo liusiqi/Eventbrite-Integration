@@ -53,10 +53,10 @@ namespace EventBrite0
             return userID ;
         }
 
-        public int User_Event_Count(string userID)
+        public string User_Events(string userID)
         {
-            string url = "https://www.eventbriteapi.com/v3/users/110515278343/owned_events/";// +userID + "/owned_events/";
-            int eventCount = 0;
+            string url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/" + "?status=ended";
+            string eventCount = "";
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -75,15 +75,15 @@ namespace EventBrite0
                 sReader.Close();
                 response.Close();
 
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                dynamic json = serializer.DeserializeObject(userInfo);
-                eventCount = json["pagination"]["page_size"];
+                //JavaScriptSerializer serializer = new JavaScriptSerializer();
+                //dynamic json = serializer.DeserializeObject(userInfo);  do this later when more detail needed.
+                eventCount = userInfo;
                 return eventCount;
             }
             catch(WebException e)
             {
                 string ErrorMessage = "Error : retrieving Event Count failed. " + e;
-                return 0;
+                return ErrorMessage;
             }
         }
     }

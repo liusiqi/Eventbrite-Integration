@@ -62,10 +62,20 @@ namespace EventBrite0
                 //Response.Write(AccessToken + "\n");
 
                 Eventbrite_Object = new API_Methods(AccessToken);
-                //string userID= Eventbrite_Object.User_ID();
-                int eventCount = Eventbrite_Object.User_Event_Count("110515278343");
+                string userID= Eventbrite_Object.User_ID();
                 //Response.Write(userID + "\n\n");
-                Response.Write(eventCount);
+
+                string events = Eventbrite_Object.User_Events(userID);
+                Response.Write(events + "\n");
+                //JavaScriptSerializer serializer = new JavaScriptSerializer();
+                //dynamic Event_Details = serializer.DeserializeObject(events);  //do this later when more detail needed.
+
+                //Response.Write("Object count: " + Event_Details["pagination"]["object_count"] + "\n");
+                //Response.Write("Page number: " + Event_Details["pagination"]["page_number"] + "\n");
+                //Response.Write("Page size: " + Event_Details["pagination"]["page_size"] + "\n");
+                //Response.Write("Page count: " + Event_Details["pagination"]["page_count"] + "\n");
+
+                //Response.Write("Event1: " + Event_Details["events"][2]["name"]["text"] + ". Date: " + Event_Details["events"][2]["end"]["local"]);
             }
             catch(WebException me)
             {
