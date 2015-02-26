@@ -47,6 +47,5 @@ c:\users\bigrp17\documents\visual studio 2013\Projects\Eventbrite_2\Eventbrite_2
 c:\users\bigrp17\documents\visual studio 2013\Projects\Eventbrite_2\Eventbrite_2\bin\Microsoft.Owin.Security.Twitter.xml
 c:\users\bigrp17\documents\visual studio 2013\Projects\Eventbrite_2\Eventbrite_2\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 c:\users\bigrp17\documents\visual studio 2013\Projects\Eventbrite_2\Eventbrite_2\bin\Microsoft.Owin.Security.OAuth.xml
-c:\users\bigrp17\documents\visual studio 2013\Projects\Eventbrite_2\Eventbrite_2\obj\Debug\Eventbrite_2.csprojResolveAssemblyReference.cache
 c:\users\bigrp17\documents\visual studio 2013\Projects\Eventbrite_2\Eventbrite_2\obj\Debug\Eventbrite_2.dll
 c:\users\bigrp17\documents\visual studio 2013\Projects\Eventbrite_2\Eventbrite_2\obj\Debug\Eventbrite_2.pdb
