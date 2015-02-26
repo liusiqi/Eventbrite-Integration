@@ -20,12 +20,13 @@ namespace EventBrite0
                 string userID = Eventbrite_Object.User_ID();
                 //Response.Write(userID + "\n\n");
                 string Json_pagination_events = Eventbrite_Object.User_Events(userID);
+                Response.Write(Json_pagination_events);
                 Dictionary<string, string> Name_Link = new Dictionary<string, string>();
                 Dictionary<string, string> Name_Draft = new Dictionary<string, string>();
                 Dictionary<string, string> Name_Ignore = new Dictionary<string, string>();
                 //Response.Write(pagination_events);
 
-                Eventbrite_Object.Create_Dictionaries(Json_pagination_events, Name_Link, Name_Draft, Name_Ignore);
+                //Eventbrite_Object.Create_Dictionaries(Json_pagination_events, Name_Link, Name_Draft, Name_Ignore);
             }
             catch (WebException me)
             {

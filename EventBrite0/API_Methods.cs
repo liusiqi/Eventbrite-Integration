@@ -55,7 +55,7 @@ namespace EventBrite0
 
         public string User_Events(string userID)
         {
-            string url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/";
+            string url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/?status=draft";
             string Pagination_Events = "";
             try
             {
