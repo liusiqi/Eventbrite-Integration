@@ -69,10 +69,11 @@
     <Content Include="main.aspx" />
     <Content Include="Note.txt" />
     <Content Include="Parse_Access.aspx" />
+    <Content Include="Readme.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API_Methods.cs" />
+    <Compile Include="API_Calls.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

@@ -16,17 +16,27 @@ namespace EventBrite0
             //API_Methods Eventbrite_Object = null;
             try
             {
-                API_Methods Eventbrite_Object = new API_Methods("5Z5FE6HF3BJ763FOJFOQ");
-                string userID = Eventbrite_Object.User_ID();
+                API_Calls Eventbrite_Object = new API_Calls("5Z5FE6HF3BJ763FOJFOQ");
+                //string userID = Eventbrite_Object.User_ID();
+                Eventbrite_Object.Get_User_ID();
                 //Response.Write(userID + "\n\n");
-                string Json_pagination_events = Eventbrite_Object.User_Events(userID);
-                Response.Write(Json_pagination_events);
-                Dictionary<string, string> Name_Link = new Dictionary<string, string>();
-                Dictionary<string, string> Name_Draft = new Dictionary<string, string>();
-                Dictionary<string, string> Name_Ignore = new Dictionary<string, string>();
-                //Response.Write(pagination_events);
+                string Json_pagination_events = Eventbrite_Object.User_Events(1);
+                //Dictionary<string, Tuple<string, string>> Name_Link = new Dictionary<string, Tuple<string, string>>();
+                List<Tuple<string, string>> Name_Link = new List<Tuple<string,string>>();
+                //Dictionary<string, string> Name_Draft = new Dictionary<string, string>();
+                //Dictionary<string, string> Name_Ignore = new Dictionary<string, string>();
 
-                //Eventbrite_Object.Create_Dictionaries(Json_pagination_events, Name_Link, Name_Draft, Name_Ignore);
+                
+
+                int count_alive = Eventbrite_Object.Create_Dictionaries(Json_pagination_events, Name_Link);
+
+                foreach (var item in Name_Link)
+                {
+                    Response.Write(item.Item1 + " , " + item.Item2);
+                    Response.Write(Environment.NewLine);
+                }
+
+                Response.Write(count_alive);
             }
             catch (WebException me)
             {

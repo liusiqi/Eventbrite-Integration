@@ -14,7 +14,7 @@ namespace EventBrite0
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            API_Methods Eventbrite_Object = null;
+            API_Calls Eventbrite_Object = null;
             //code=THE_USERS_AUTH_CODE&client_secret=YOUR_CLIENT_SECRET&client_id=YOUR_API_KEY&grant_type=authorization_code
             string THE_USERS_AUTH_CODE = Request.QueryString["code"];
             const string YOUR_CLIENT_SECRET = "Y3YA5HJD3EM6UX364MKPRQUCH7NDL2RSBIHG3PS3UCM3MYCB6M";
