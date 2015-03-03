@@ -27,7 +27,7 @@ namespace EventBrite0
                 //Dictionary<string, string> Name_Draft = new Dictionary<string, string>();
                 //Dictionary<string, string> Name_Ignore = new Dictionary<string, string>();
 
-                //int count_alive = Eventbrite_Object.Create_Dictionaries(Json_pagination_events, Name_Link);
+                int count_alive = Eventbrite_Object.Create_Dictionaries(Json_pagination_events, Name_Link);
 
                 //foreach (var item in Name_Link)
                 //{

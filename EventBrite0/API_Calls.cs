@@ -55,11 +55,7 @@ namespace EventBrite0
 
         public string User_Events(int page_number)
         {
-            string url = "";
-            if (page_number == 1)
-                 url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/";
-            else
-                url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/?page=" +  page_number.ToString();
+            string url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/?page=" +  page_number.ToString();
             string Pagination_Events = "";
 
             try
