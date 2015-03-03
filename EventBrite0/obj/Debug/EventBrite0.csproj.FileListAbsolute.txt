@@ -4,3 +4,9 @@ C:\Users\bigrp17\Documents\Visual Studio 2013\Projects\EventBrite0\EventBrite0\b
 C:\Users\bigrp17\Documents\Visual Studio 2013\Projects\EventBrite0\EventBrite0\obj\Debug\EventBrite0.dll
 C:\Users\bigrp17\Documents\Visual Studio 2013\Projects\EventBrite0\EventBrite0\obj\Debug\EventBrite0.pdb
 C:\Users\bigrp17\Documents\Visual Studio 2013\Projects\EventBrite0\EventBrite0\obj\Debug\EventBrite0.csprojResolveAssemblyReference.cache
+C:\Users\Siqi Liu\Documents\Visual Studio 2013\Projects\Eventbrite\EventBrite0\bin\EventBrite0.dll.config
+C:\Users\Siqi Liu\Documents\Visual Studio 2013\Projects\Eventbrite\EventBrite0\bin\EventBrite0.dll
+C:\Users\Siqi Liu\Documents\Visual Studio 2013\Projects\Eventbrite\EventBrite0\bin\EventBrite0.pdb
+C:\Users\Siqi Liu\Documents\Visual Studio 2013\Projects\Eventbrite\EventBrite0\obj\Debug\EventBrite0.csprojResolveAssemblyReference.cache
+C:\Users\Siqi Liu\Documents\Visual Studio 2013\Projects\Eventbrite\EventBrite0\obj\Debug\EventBrite0.dll
+C:\Users\Siqi Liu\Documents\Visual Studio 2013\Projects\Eventbrite\EventBrite0\obj\Debug\EventBrite0.pdb
