@@ -15,208 +15,115 @@ namespace EventBrite0
         string userID = "";
         string url = "";
         dynamic page_events = null;
-        string current_page_info = "";
+        const int page_size = 50;
 
         public API_Calls(string accesstoken)
         {
+            // when the object is created, pass the access token to it.
             AccessToken = accesstoken;
         }
 
-        public void Get_User_ID()
+        // This method is used to send request and store response into Json string
+        // The request method is GET, and the url given as an argument, and the access token is added to the Authorization header.
+        public string request_response(string url, string failed_detail)
         {
-            string url = "https://www.eventbriteapi.com/v3/users/me/";
-            try
-            {       
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = "GET";
-                //request.Timeout = 200000;
-                request.ContentType = "application/json; charset=UTF-8";
-                request.Headers.Add("Authorization", "Bearer " + AccessToken);
-
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                Stream streamResponse = response.GetResponseStream();
-
-                //Read Body of Response
-                StreamReader sReader = new StreamReader(streamResponse);
-                string userInfo = sReader.ReadToEnd();
-
-                sReader.Close();
-                response.Close();
-
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                dynamic json = serializer.DeserializeObject(userInfo);
-                userID = json["id"];
-            }
-            catch(WebException e)
-            {
-                string ErrorMessage = "Error : retrieving user ID failed. " + e;
-                //return ErrorMessage;
-            }
-            //return userID ;
-        }
-
-        public string User_Events(int page_number)
-        {
-             url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/?page=" +  page_number.ToString();
-            string Pagination_Events = "";
-
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "GET";
                 request.ContentType = "application/json; charset=UTF-8";
                 request.Headers.Add("Authorization", "Bearer " + AccessToken);
-
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
                 Stream streamResponse = response.GetResponseStream();
-
                 StreamReader sReader = new StreamReader(streamResponse);
                 string userInfo = sReader.ReadToEnd();
-
                 sReader.Close();
                 response.Close();
-
-                Pagination_Events = userInfo;
-                return Pagination_Events;
+                return userInfo;
             }
-            catch(WebException e)
+            catch (WebException e)
             {
-                string ErrorMessage = "Error : retrieving Pagination and Events failed. " + e;
+                string ErrorMessage = "Error : retrieving " + failed_detail + " failed. " + e;
                 return ErrorMessage;
             }
         }
 
-        public int Create_Dictionaries(string Json_pagination_events, List<Tuple<string, string>> Name_Link)//, Dictionary<string, string> Name_Draft, Dictionary<string, string> Name_Ignore)
+        public void Get_User_ID()
         {
-            int count_alive = 0;
-            int current_page = 0;
+            // for getting the user's event ID, this is the API request: http://developer.eventbrite.com/docs/user-details/
+            string url = "https://www.eventbriteapi.com/v3/users/me/";
+            string userInfo = request_response(url, "user ID");
+
+            // The user's event id is under the "id" keyword.
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            dynamic json = serializer.DeserializeObject(userInfo);
+            userID = json["id"];
+        }
+
+        public string User_Events(int page_number)
+        {
+            // To get the user's event info, here is the url: http://developer.eventbrite.com/docs/user-owned-events/
+            // if there is no query string following, then it will always return the 1st page info.
+             url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/?page=" +  page_number.ToString();
+
+            // Create a string to store the return Json string.
+            string Pagination_Events = request_response(url, "Pagination and Events");
+            return Pagination_Events;
+        }
+
+        public Tuple<int, int> Create_Lists(string Json_pagination_events, List<Tuple<string, string>> Name_Link, List<Tuple<string, string>> Name_Draft)
+        {
+            int count_live = 0; // counting the live events
+            int count_draft = 0; // counting the draft events
+            int current_page = 0; // current page number and ready to be used as the query string ?page = current_page
+
+            // The first page info is given as an argument, decode it and we will see the pagination: how many events and pages we have.
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             dynamic pagination_events = serializer.DeserializeObject(Json_pagination_events);
-            int event_count = pagination_events["pagination"]["object_count"];
-            int page_count = pagination_events["pagination"]["page_count"];
-            if (event_count == 0)
+            int event_count = pagination_events["pagination"]["object_count"]; // return the total event amount.
+            int page_count = pagination_events["pagination"]["page_count"]; // return the total page amount.
+
+            if (event_count == 0) // don't really needed if no events.
             {
                 //Name_Link.Add(new Tuple<string, string>("", ""));
-                return count_alive;
+                return new Tuple<int,int>(count_live, count_draft);
             }
             else
             {
-                //for (int events = 0; events < event_count; events++)
-                //{
-                //    if (events % 50 == 0)
-                //    {
-                //        current_page++; 
-                //        string current_page_info = User_Events(current_page);
-                //        page_events = serializer.DeserializeObject(current_page_info);
-                //    }
+                // Since we already have the first page information, we pass it to a global object page_events with is to be parse for events.
+                page_events = serializer.DeserializeObject(Json_pagination_events);
 
-                //    int event_index = events % 50;
-                //    string event_status = page_events["events"][event_index]["status"];
-                //    if (event_status == "live")
-                //    {
-                //        string event_name = page_events["events"][event_index]["name"]["text"];
-                //        string event_link = page_events["events"][event_index]["url"];
-                //        Name_Link.Add(new Tuple<string, string>(event_name, event_link));
-                //        count_alive++;
-                //    }
-                //}
-                if (page_count == 1)
+                // iterate through events details. 
+                for (int events = 0; events < event_count; events++)
                 {
-                    for (int i = 0; i < event_count; i++)
+                    if (events % page_size == 0) // event time it hits a new page.
                     {
-                        string event_status = pagination_events["events"][i]["status"];
-                        if (event_status == "live")
+                        current_page++; // update page number
+                        if (page_count > 1 && current_page >= 2) // since we already have the 1st page info, there is no need to resend request for the 1st page. 
                         {
-                            string event_name = pagination_events["events"][i]["name"]["text"];
-                            string event_id = pagination_events["events"][i]["id"];
-                            string event_link = pagination_events["events"][i]["url"];
-                            Name_Link.Add(new Tuple<string, string>(event_name, event_link));
-                            count_alive++;
-                        }
-                    }
-                }
-                else if (page_count == 2)
-                {
-                    for (int i = 0; i < 50; i++)
-                    {
-                        string event_status = pagination_events["events"][i]["status"];
-                        if (event_status == "live")
-                        {
-                            string event_name = pagination_events["events"][i]["name"]["text"];
-                            string event_id = pagination_events["events"][i]["id"];
-                            string event_link = pagination_events["events"][i]["url"];
-                            Name_Link.Add(new Tuple<string, string>(event_name, event_link));
-                            count_alive++;
-                        }
+                            string current_page_info = User_Events(current_page); // for pages greater than 1, send the request and store the response 
+                            page_events = serializer.DeserializeObject(current_page_info); // update the global object and ready to be parsed
+                        } 
                     }
 
-                    string Json_Last_Page = User_Events(2);
-                    dynamic last_page_events = serializer.DeserializeObject(Json_Last_Page);
-                    for (int i = 0; i < event_count / 50; i++)
-                    {
-                        string event_status = last_page_events["events"][i]["status"];
-                        if (event_status == "live")
-                        {
-                            string event_name = last_page_events["events"][i]["name"]["text"];
-                            string event_id = last_page_events["events"][i]["id"];
-                            string event_link = last_page_events["events"][i]["url"];
-                            Name_Link.Add(new Tuple<string, string>(event_name, event_link));
-                            count_alive++;
-                        }
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < 50; i++)
-                    {
-                        string event_status = pagination_events["events"][i]["status"];
-                        if (event_status == "live")
-                        {
-                            string event_name = pagination_events["events"][i]["name"]["text"];
-                            string event_id = pagination_events["events"][i]["id"];
-                            string event_link = pagination_events["events"][i]["url"];
-                            Name_Link.Add(new Tuple<string, string>(event_name, event_link));
-                            count_alive++;
-                        }
-                    }
+                    int event_index = events % page_size; // the event index in each page.
+                    string event_status = page_events["events"][event_index]["status"]; // read event status. 
+                    string event_name = page_events["events"][event_index]["name"]["text"]; // read event name.
+                    string event_link = page_events["events"][event_index]["url"]; // read event link.
 
-                    for (int page_number = 2; page_number < page_count; page_number++)
+                    if (event_status == "live") // if the event is a live event, store its name and link into live event list.
                     {
-                        string Json_Middle_Pages = User_Events(page_number);
-                        dynamic middle_page_events = serializer.DeserializeObject(Json_Middle_Pages);
-                        for (int i = 0; i < 50; i++)
-                        {
-                            string event_status = middle_page_events["events"][i]["status"];
-                            if (event_status == "live")
-                            {
-                                string event_name = middle_page_events["events"][i]["name"]["text"];
-                                string event_id = middle_page_events["events"][i]["id"];
-                                string event_link = middle_page_events["events"][i]["url"];
-                                Name_Link.Add(new Tuple<string, string>(event_name, event_link));
-                                count_alive++;
-                            }
-                        }
+                        Name_Link.Add(new Tuple<string, string>(event_name, event_link));
+                        count_live++;
                     }
-
-                    string Json_Last_Page = User_Events(2);
-                    dynamic last_page_events = serializer.DeserializeObject(Json_Last_Page);
-                    for (int i = 0; i < event_count / 50; i++)
+                    else if (event_status == "draft") // if the event is a draft event, store its name and link into draft event list.
                     {
-                        string event_status = last_page_events["events"][i]["status"];
-                        if (event_status == "live")
-                        {
-                            string event_name = last_page_events["events"][i]["name"]["text"];
-                            string event_id = last_page_events["events"][i]["id"];
-                            string event_link = last_page_events["events"][i]["url"];
-                            Name_Link.Add(new Tuple<string, string>(event_name, event_link));
-                            count_alive++;
-                        }
+                        Name_Draft.Add(new Tuple<string, string>(event_name, event_link));
+                        count_draft++;
                     }
                 }
             }
-            return count_alive;
+            return new Tuple<int,int>(count_live, count_draft);
         }
     }
 }
