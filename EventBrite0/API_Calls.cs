@@ -13,6 +13,9 @@ namespace EventBrite0
     {
         private string AccessToken;
         string userID = "";
+        string url = "";
+        dynamic page_events = null;
+        string current_page_info = "";
 
         public API_Calls(string accesstoken)
         {
@@ -55,11 +58,11 @@ namespace EventBrite0
 
         public string User_Events(int page_number)
         {
-            string url = "";
-            if (page_number == 1)
-                 url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/";
-            else
-                url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/?page=" +  page_number.ToString();
+            //string url = "";
+            //if (page_number == 1)
+            //     url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/";
+            //else
+             url = "https://www.eventbriteapi.com/v3/users/" + userID + "/owned_events/?page=" +  page_number.ToString();
             string Pagination_Events = "";
 
             try
@@ -92,107 +95,35 @@ namespace EventBrite0
         public int Create_Dictionaries(string Json_pagination_events, List<Tuple<string, string>> Name_Link)//, Dictionary<string, string> Name_Draft, Dictionary<string, string> Name_Ignore)
         {
             int count_alive = 0;
+            int current_page = 0;
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             dynamic pagination_events = serializer.DeserializeObject(Json_pagination_events);
             int event_count = pagination_events["pagination"]["object_count"];
             int page_count = pagination_events["pagination"]["page_count"];
             if (event_count == 0)
             {
-                Name_Link.Add(new Tuple<string, string>("", ""));
+                //Name_Link.Add(new Tuple<string, string>("", ""));
+                return count_alive;
             }
             else
             {
-                if (page_count == 1)
+                for (int events = 0; events < event_count; events++)
                 {
-                    for (int i = 0; i < event_count; i++)
+                    if (events % 50 == 0)
                     {
-                        string event_status = pagination_events["events"][i]["status"];
-                        if (event_status == "live")
-                        {
-                            string event_name = pagination_events["events"][i]["name"]["text"];
-                            string event_id = pagination_events["events"][i]["id"];
-                            string event_link = pagination_events["events"][i]["url"];
-                            Name_Link.Add(new Tuple<string, string>(event_name, event_link));
-                            count_alive++;
-                        }
-                    }
-                }
-                else if (page_count == 2)
-                {
-                    for (int i = 0; i < 50; i++)
-                    {
-                        string event_status = pagination_events["events"][i]["status"];
-                        if (event_status == "live")
-                        {
-                            string event_name = pagination_events["events"][i]["name"]["text"];
-                            string event_id = pagination_events["events"][i]["id"];
-                            string event_link = pagination_events["events"][i]["url"];
-                            Name_Link.Add(new Tuple<string, string>(event_name, event_link));
-                            count_alive++;
-                        }
+                        current_page++; 
+                        string current_page_info = User_Events(current_page);
+                        page_events = serializer.DeserializeObject(current_page_info);
                     }
 
-                    string Json_Last_Page = User_Events(2);
-                    dynamic last_page_events = serializer.DeserializeObject(Json_Last_Page);
-                    for (int i = 0; i < event_count/50; i++)
+                    int event_index = events % 50;
+                    string event_status = page_events["events"][event_index]["status"];
+                    if (event_status == "live")
                     {
-                        string event_status = last_page_events["events"][i]["status"];
-                        if (event_status == "live")
-                        {
-                            string event_name = last_page_events["events"][i]["name"]["text"];
-                            string event_id = last_page_events["events"][i]["id"];
-                            string event_link = last_page_events["events"][i]["url"];
-                            Name_Link.Add(new Tuple<string, string>(event_name, event_link));
-                            count_alive++;
-                        }
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < 50; i++)
-                    {
-                        string event_status = pagination_events["events"][i]["status"];
-                        if (event_status == "live")
-                        {
-                            string event_name = pagination_events["events"][i]["name"]["text"];
-                            string event_id = pagination_events["events"][i]["id"];
-                            string event_link = pagination_events["events"][i]["url"];
-                            Name_Link.Add(new Tuple<string, string>(event_name, event_link));
-                            count_alive++;
-                        }
-                    }
-
-                    for (int page_number = 2; page_number < page_count; page_number++)
-                    {
-                        string Json_Middle_Pages = User_Events(page_number);
-                        dynamic middle_page_events = serializer.DeserializeObject(Json_Middle_Pages);
-                        for (int i = 0; i < 50; i++)
-                        {
-                            string event_status = middle_page_events["events"][i]["status"];
-                            if (event_status == "live")
-                            {
-                                string event_name = middle_page_events["events"][i]["name"]["text"];
-                                string event_id = middle_page_events["events"][i]["id"];
-                                string event_link = middle_page_events["events"][i]["url"];
-                                Name_Link.Add(new Tuple<string, string>(event_name, event_link));
-                                count_alive++;
-                            }
-                        }
-                    }
-
-                    string Json_Last_Page = User_Events(2);
-                    dynamic last_page_events = serializer.DeserializeObject(Json_Last_Page);
-                    for (int i = 0; i < event_count / 50; i++)
-                    {
-                        string event_status = last_page_events["events"][i]["status"];
-                        if (event_status == "live")
-                        {
-                            string event_name = last_page_events["events"][i]["name"]["text"];
-                            string event_id = last_page_events["events"][i]["id"];
-                            string event_link = last_page_events["events"][i]["url"];
-                            Name_Link.Add(new Tuple<string, string>(event_name, event_link));
-                            count_alive++;
-                        }
+                        string event_name = page_events["events"][event_index]["name"]["text"];
+                        string event_link = page_events["events"][event_index]["url"];
+                        Name_Link.Add(new Tuple<string, string>(event_name, event_link));
+                        count_alive++;
                     }
                 }
             }
