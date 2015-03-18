@@ -5,7 +5,8 @@
 	4. This is the best explanation so far: http://www.google.com/url?q=http%3A%2F%2Fwww.adrianworlddesign.com%2FKnowledge-Base%2FWeb-Standards%2FThings-about-Hypertext%2FHow-does-a-redirect-work&sa=D&sntz=1&usg=AFQjCNFqybcKk1Pl705Z46oFb8WGOK0Bvg
 	5. another good link: http://www.google.com/url?q=http%3A%2F%2Fclassicasp.aspfaq.com%2Fgeneral%2Fwhat-do-i-need-to-know-about-response-redirect.html&sa=D&sntz=1&usg=AFQjCNHO8FcJNRKmRp9AhZM_DlhqgE0-vw
 
-Access Token: 5Z5FE6HF3BJ763FOJFOQ 
+Access Token with 52 events: 5Z5FE6HF3BJ763FOJFOQ 
+Access Token with 0 events: UKBCL3D77A7VP5HIMNXR
 
 Pagination : http://developer.eventbrite.com/docs/pagination/
 
@@ -13,6 +14,8 @@ Eventbrite API Methods:
 	1. Request Parameters General: http://developer.eventbrite.com/docs/
 	2 User Details: http://developer.eventbrite.com/docs/user-details/
 
+
+Old code for parsing events:
                 if (page_count == 1)
                 {
                     for (int i = 0; i < event_count; i++)
@@ -107,24 +110,58 @@ Eventbrite API Methods:
                     }
                 }
 
+Old code for get user ID:
+		    //try
+            //{       
+            //    // Create request url, the method is get, content type is Json, add AccessToken to the Authorization header.
+            //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            //    request.Method = "GET";
+            //    //request.Timeout = 200000;
+            //    request.ContentType = "application/json; charset=UTF-8";
+            //    request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
+            //    // Send the request and get response
+            //    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
-				                for (int events = 0; events < event_count; events++)
-                {
-                    if (events % 50 == 0)
-                    {
-                        current_page++; 
-                        string current_page_info = User_Events(current_page);
-                        page_events = serializer.DeserializeObject(current_page_info);
-                    }
+            //    // Create a stream to read the response
+            //    Stream streamResponse = response.GetResponseStream();
 
-                    int event_index = events % 50;
-                    string event_status = page_events["events"][event_index]["status"];
-                    if (event_status == "live")
-                    {
-                        string event_name = page_events["events"][event_index]["name"]["text"];
-                        string event_link = page_events["events"][event_index]["url"];
-                        Name_Link.Add(new Tuple<string, string>(event_name, event_link));
-                        count_alive++;
-                    }
-                }
+            //    //Read Body of Response
+            //    StreamReader sReader = new StreamReader(streamResponse);
+            //    string userInfo = sReader.ReadToEnd();
+
+            //    sReader.Close();
+            //    response.Close();
+
+            //    // Since the stage is in Json format, decode it and the id is belonged to "id" key.
+            //    JavaScriptSerializer serializer = new JavaScriptSerializer();
+            //    dynamic json = serializer.DeserializeObject(userInfo);
+            //    userID = json["id"];
+            //}
+            //catch(WebException e)
+            //{
+            //    string ErrorMessage = "Error : retrieving user ID failed. " + e;
+            //}
+
+Old code for geting user owned events:
+            //try
+            //{
+            //    // again, the method of the request is GET, and the accesstoken is used
+            //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            //    request.Method = "GET";
+            //    request.ContentType = "application/json; charset=UTF-8";
+            //    request.Headers.Add("Authorization", "Bearer " + AccessToken);
+            //    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            //    Stream streamResponse = response.GetResponseStream();
+            //    StreamReader sReader = new StreamReader(streamResponse);
+            //    string userInfo = sReader.ReadToEnd();
+            //    sReader.Close();
+            //    response.Close();
+            //    Pagination_Events = userInfo;
+            //    return Pagination_Events;
+            //}
+            //catch(WebException e)
+            //{
+            //    string ErrorMessage = "Error : retrieving Pagination and Events failed. " + e;
+            //    return ErrorMessage;
+            //}

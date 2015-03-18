@@ -13,29 +13,35 @@ namespace EventBrite0
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //API_Methods Eventbrite_Object = null;
             try
             {
-                API_Calls Eventbrite_Object = new API_Calls("5Z5FE6HF3BJ763FOJFOQ");
-                //string userID = Eventbrite_Object.User_ID();
-                Eventbrite_Object.Get_User_ID();
-                //Response.Write(userID + "\n\n");
-                string Json_pagination_events = Eventbrite_Object.User_Events(1);
-                //Response.Write(Json_pagination_events);
-                //Dictionary<string, Tuple<string, string>> Name_Link = new Dictionary<string, Tuple<string, string>>();
-                List<Tuple<string, string>> Name_Link = new List<Tuple<string,string>>();
-                //Dictionary<string, string> Name_Draft = new Dictionary<string, string>();
-                //Dictionary<string, string> Name_Ignore = new Dictionary<string, string>();
+                const int default_first_page = 1; // used to get the first page information from which we know the pagination. 
+                API_Calls Eventbrite_Object = new API_Calls("UKBCL3D77A7VP5HIMNXR"); // Hard code access token.
+                Eventbrite_Object.Get_User_ID(); // Get the ID from the user who gave authorization. The ID is to be used to get the user's owned events.
+                string Json_pagination_events = Eventbrite_Object.User_Events(default_first_page); // Get the first page info of the user.
 
-                int count_alive = Eventbrite_Object.Create_Dictionaries(Json_pagination_events, Name_Link);
+                // Create 2 lists tuple. 1st list for storing Live events, 2nd list for storing Draft events. The left item of the tuple is the name of the event, and the right of the tuple is the link of the event.
+                List<Tuple<string, string>> Name_Live = new List<Tuple<string,string>>();
+                List<Tuple<string, string>> Name_Draft = new List<Tuple<string, string>>();
 
-                foreach (var item in Name_Link)
+                // After  check information of the user, add events to relative lists.
+                Tuple<int, int> counts_Live_Draft = Eventbrite_Object.Create_Lists(Json_pagination_events, Name_Live, Name_Draft);
+
+                // The below is just to showing up Live events and Draft events, and their amounts.
+                foreach (var item in Name_Live)
                 {
-                    Response.Write(item.Item1 + " : " + item.Item2);
+                    Response.Write(item.Item1 + ":" + item.Item2 + ",");
                     Response.Write(Environment.NewLine);
                 }
+                Response.Write("\nLive event count: " + counts_Live_Draft.Item1.ToString());
+                Response.Write(Environment.NewLine);
 
-                Response.Write(count_alive);
+                foreach (var item in Name_Draft)
+                {
+                    Response.Write(item.Item1 + ":" + item.Item2 + ",");
+                    Response.Write(Environment.NewLine);
+                }
+                Response.Write("Draft event count: " + counts_Live_Draft.Item2.ToString());
             }
             catch (WebException me)
             {
