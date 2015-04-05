@@ -31,7 +31,7 @@ namespace EventBrite0
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "GET";
-                request.ContentType = "application/json; charset=UTF-8";
+                request.Timeout = 100000;
                 request.Headers.Add("Authorization", "Bearer " + AccessToken);
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 Stream streamResponse = response.GetResponseStream();

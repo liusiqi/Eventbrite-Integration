@@ -16,6 +16,7 @@ namespace EventBrite0
         {
             //code=THE_USERS_AUTH_CODE&client_secret=YOUR_CLIENT_SECRET&client_id=YOUR_API_KEY&grant_type=authorization_code
             string THE_USERS_AUTH_CODE = Request.QueryString["code"];
+            Response.Write(THE_USERS_AUTH_CODE);
             const string YOUR_CLIENT_SECRET = "Y3YA5HJD3EM6UX364MKPRQUCH7NDL2RSBIHG3PS3UCM3MYCB6M";
             const string YOUR_API_KEY = "YHASIDSTEN277KD7LK";
             //string test = Request.QueryString["code"];
@@ -38,6 +39,7 @@ namespace EventBrite0
                 request.ContentType = "application/x-www-form-urlencoded";
                 string UrlEncodedData  = "code=" + HttpUtility.UrlEncode(THE_USERS_AUTH_CODE) + "&" + "client_secret=" + HttpUtility.UrlEncode(YOUR_CLIENT_SECRET) + "&" + "client_id=" + HttpUtility.UrlEncode(YOUR_API_KEY) + "&" + "grant_type=" + HttpUtility.UrlEncode("authorization_code");
                 request.ContentLength = UrlEncodedData.Length;
+                request.Timeout = 100000;
 
                 // Write the Url Encoded Data into a stream. 
                 using (StreamWriter RequestStream = new StreamWriter(request.GetRequestStream()))
